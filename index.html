@@ -1222,11 +1222,15 @@
           <div class="phase-desc">Activate the Marketing API product inside your app and locate your App ID and App Secret — the credentials you'll need for token generation.</div>
         </div>
         <div class="phase-meta">
-          <span class="phase-progress-pill" id="pill-phase-3">0 / 4</span>
+          <span class="phase-progress-pill" id="pill-phase-3">0 / 6</span>
           <span class="phase-chevron">▼</span>
         </div>
       </div>
       <div class="phase-body">
+        <div class="callout info" style="margin-bottom:16px;">
+          <span class="callout-icon">ℹ️</span>
+          <span class="callout-text"><strong>Why add the Marketing API product?</strong> The Marketing API is not active on your app by default. Adding it as a product is what unlocks access to Meta's campaign management endpoints — without it, no API call related to ads will work, regardless of what token you have. It also enables the <code>ads_management</code> and <code>ads_read</code> permissions that your System User token will need.</span>
+        </div>
         <ul class="checklist" id="checklist-phase-3">
           <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
             <div class="check-box"><span class="check-icon">✓</span></div>
@@ -1238,25 +1242,40 @@
             <div class="check-box"><span class="check-icon">✓</span></div>
             <div class="item-content">
               <div class="item-text">Find <strong>"Marketing API"</strong> in the product list and click <strong>"Set Up"</strong></div>
+              <div class="item-note">This activates the Marketing API for your app — unlocking ads_management, ads_read, and all campaign-related API endpoints.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Go to <strong>App Settings → Advanced</strong> in the left sidebar — scroll down to <strong>"Advertising Accounts"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Enter your <strong>Ad Account ID</strong> (numbers only, without the <code>act_</code> prefix) and click <strong>Save</strong></div>
+              <div class="item-note">This associates your ad account with the app. To add additional ad accounts in the future (for clients or other businesses), you must add their account ID here too — otherwise the API will not be able to read or write to those accounts through this app.</div>
             </div>
           </li>
           <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
             <div class="check-box"><span class="check-icon">✓</span></div>
             <div class="item-content">
               <div class="item-text">In the left sidebar, go to <strong>App Settings → Basic</strong> — note your <strong>App ID</strong> and <strong>App Secret</strong></div>
-              <div class="item-note">Click "Show" next to App Secret to reveal it. Keep this private — never share it publicly.</div>
+              <div class="item-note"><strong>Why do you need these?</strong> Your App ID is required when generating a System User token — Business Manager will ask you to select which app the token is for. Your App Secret is used for server-side token verification and programmatic API calls. Click "Show" next to App Secret to reveal it.</div>
             </div>
           </li>
           <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
             <div class="check-box"><span class="check-icon">✓</span></div>
             <div class="item-content">
               <div class="item-text">Save your App ID and App Secret somewhere secure (e.g. a password manager)</div>
+              <div class="item-note">You will need the App ID in Phase 4 when generating your System User token.</div>
             </div>
           </li>
         </ul>
         <div class="callout warning">
           <span class="callout-icon">⚠️</span>
-          <span class="callout-text"><strong>Keep your App Secret private.</strong> Anyone with your App Secret can generate tokens on behalf of your app. Never commit it to code or share it in messages.</span>
+          <span class="callout-text"><strong>Keep your App Secret private.</strong> Anyone with your App Secret can generate tokens on behalf of your app. Never commit it to code, share it in messages, or store it in plain text.</span>
         </div>
         <div class="resource-block">
           <div class="resource-block-title">🔗 Quick Links</div>
@@ -1412,7 +1431,11 @@
             </li>
           </ul>
 
-          <div class="token-sub-section">Step B — Assign Your App to the System User</div>
+          <div class="token-sub-section">Step B — Install Your App on the System User</div>
+          <div class="callout info" style="margin-bottom:12px;">
+            <span class="callout-icon">ℹ️</span>
+            <span class="callout-text"><strong>Why is this step critical?</strong> A System User cannot generate a token for an app unless that app has been installed on (assigned to) the System User first. This is Meta's security requirement — it ensures the app is explicitly authorised to act on behalf of this System User. If you skip this step, the token generation dropdown in Step D will either not show your app or will produce a token without the right permissions.</span>
+          </div>
           <ul class="checklist" id="checklist-advanced-b">
             <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
               <div class="check-box"><span class="check-icon">✓</span></div>
@@ -1423,7 +1446,8 @@
             <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
               <div class="check-box"><span class="check-icon">✓</span></div>
               <div class="item-content">
-                <div class="item-text">Choose <strong>"Apps"</strong> from the asset type list — select the Meta App you created in Phase 2</div>
+                <div class="item-text">Choose <strong>"Apps"</strong> from the asset type list — find and select the Meta Developer App you created in Phase 2</div>
+                <div class="item-note">This is the "install app" step. It links your app to the System User so the System User can generate tokens for it.</div>
               </div>
             </li>
             <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
@@ -1435,6 +1459,10 @@
           </ul>
 
           <div class="token-sub-section">Step C — Assign Your Ad Account to the System User</div>
+          <div class="callout info" style="margin-bottom:12px;">
+            <span class="callout-icon">ℹ️</span>
+            <span class="callout-text"><strong>Why assign the ad account?</strong> The System User token can only access ad accounts that have been explicitly assigned to it as assets. Even if your token has <code>ads_management</code> permission, it will return a permission error when trying to read or write to an ad account that hasn’t been assigned here. For every additional client or ad account you want Manus to manage, you must repeat this step.</span>
+          </div>
           <ul class="checklist" id="checklist-advanced-c">
             <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
               <div class="check-box"><span class="check-icon">✓</span></div>
@@ -1446,6 +1474,7 @@
               <div class="check-box"><span class="check-icon">✓</span></div>
               <div class="item-content">
                 <div class="item-text">Select your Ad Account — enable <strong>"Manage Ad Account"</strong> (full control)</div>
+                <div class="item-note">"Manage Ad Account" gives the System User full read and write access — this is required for Manus to launch, pause, and adjust ads via the API.</div>
               </div>
             </li>
             <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
