@@ -1523,7 +1523,7 @@
         <div class="phase-header-text">
           <div class="phase-label">Phase 5</div>
           <div class="phase-title">Connect Meta Ads Manager in Manus</div>
-          <div class="phase-desc">Use Manus's built-in Meta Ads Manager connector. This is the easiest connection method — it uses OAuth and takes about 2 minutes.</div>
+          <div class="phase-desc">Enable the built-in Meta Ads Manager connector — this is the read and reporting layer. For write access (launching, pausing, adjusting ads), you will also need Phase 6.</div>
         </div>
         <div class="phase-meta">
           <span class="phase-progress-pill" id="pill-phase-5">0 / 7</span>
@@ -1531,9 +1531,28 @@
         </div>
       </div>
       <div class="phase-body">
+        <!-- Two-layer distinction block -->
+        <div style="background:#f0f4ff;border:1px solid #c7d2fe;border-radius:12px;padding:20px 22px;margin-bottom:20px;">
+          <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;color:#000a33;margin-bottom:14px;">Understanding the Two Layers of Connection</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:#fff;border:2px solid #6366f1;border-radius:10px;padding:14px 16px;">
+              <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;color:#6366f1;margin-bottom:6px;">📊 Layer 1 — MCP Connector (This Phase)</div>
+              <div style="font-size:12px;color:#444;line-height:1.6;">Manus's built-in <strong>Meta Ads Manager connector</strong> connects via OAuth to the Meta Marketing API. It gives Manus <strong>read access</strong> — pulling campaign data, performance metrics, insights, and recommendations. Your token is stored securely inside Manus.</div>
+              <div style="margin-top:8px;font-size:11px;color:#6366f1;font-weight:600;">✓ Reports &nbsp; ✓ Insights &nbsp; ✓ Campaign data</div>
+            </div>
+            <div style="background:#fff;border:2px solid #00916e;border-radius:10px;padding:14px 16px;">
+              <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;color:#00916e;margin-bottom:6px;">⚡ Layer 2 — Graph API + System User Token (Phase 6)</div>
+              <div style="font-size:12px;color:#444;line-height:1.6;">Your <strong>System User token</strong> (generated in Phase 4) authenticates Manus directly to the <strong>Meta Graph API</strong>. This is what enables Manus to take <strong>write actions</strong> — launching campaigns, pausing ads, adjusting budgets, uploading creatives — via direct API calls.</div>
+              <div style="margin-top:8px;font-size:11px;color:#00916e;font-weight:600;">✓ Launch ads &nbsp; ✓ Pause/activate &nbsp; ✓ Adjust budgets</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:#555;background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e0e0e0;">
+            <strong>Both layers use the same System User token</strong> — the token is what grants the permissions. The MCP connector uses it for structured read queries; the Graph API uses it for direct programmatic write actions. You need both set up to get the full capability.
+          </div>
+        </div>
         <div class="callout info">
           <span class="callout-icon">ℹ️</span>
-          <span class="callout-text">The built-in connector uses Meta's OAuth flow — the same secure login method used by major platforms. <strong>Manus never sees your password.</strong> You control exactly what Manus can access and can revoke access at any time.</span>
+          <span class="callout-text">The built-in connector uses Meta's OAuth flow. <strong>Manus never sees your password.</strong> Your System User token is stored securely at the Manus account level — not on your local machine.</span>
         </div>
         <ul class="checklist" id="checklist-phase-5">
           <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
@@ -1594,9 +1613,9 @@
       <div class="phase-header" onclick="togglePhase('phase-6')">
         <div class="phase-num">6</div>
         <div class="phase-header-text">
-          <div class="phase-label">Phase 6 — Advanced / Optional</div>
-          <div class="phase-title">Configure Custom MCP with System User Token</div>
-          <div class="phase-desc">If you generated a permanent System User token in Phase 4, you can configure it directly in Manus as a Custom MCP for fully persistent, uninterrupted automation.</div>
+          <div class="phase-label">Phase 6 — Write Access Layer</div>
+          <div class="phase-title">Configure the Meta Graph API Connection (Write Access)</div>
+          <div class="phase-desc">This is what enables Manus to <strong>launch, pause, adjust, and manage ads</strong> — not just read them. Your System User token connects Manus directly to the Meta Graph API for full programmatic write access.</div>
         </div>
         <div class="phase-meta">
           <span class="phase-progress-pill" id="pill-phase-6">0 / 5</span>
@@ -1604,9 +1623,12 @@
         </div>
       </div>
       <div class="phase-body">
-        <div class="callout purple">
-          <span class="callout-icon">🔐</span>
-          <span class="callout-text"><strong>This phase is optional</strong> but highly recommended if you want Manus to run automated reports, launch ads, and manage campaigns without ever needing to re-authenticate. This is how the full "set and forget" automation is achieved.</span>
+        <div class="callout" style="background:#f0fdf9;border:1px solid #6ee7b7;border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="callout-icon">⚡</span>
+          <span class="callout-text"><strong>This is the write access layer.</strong> Phase 5 gave Manus the ability to read your Meta Ads data. This phase gives Manus the ability to <strong>take action</strong> — launching campaigns, pausing underperforming ads, adjusting budgets, and uploading creatives — by connecting directly to the <strong>Meta Graph API</strong> using your permanent System User token. Both phases are required for the full Manus × Meta Ads automation stack.</span>
+        </div>
+        <div style="background:#fff8e1;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#555;">
+          <strong>How it works technically:</strong> When you ask Manus to pause an ad or launch a campaign, Manus writes and executes a Python script that calls the Meta Graph API directly using your System User token. The token is stored securely in Manus at the account level — Manus retrieves it automatically for every write operation.
         </div>
         <ul class="checklist" id="checklist-phase-6">
           <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-6">
