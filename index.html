@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connect Meta Ads to Manus — Setup Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f7f7f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* ─── User Setup Modal ─── */
+    #user-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,10,51,0.85);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    #user-modal {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 480px; width: 100%;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    #user-modal .modal-logo {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-bottom: 28px;
+    }
+    #user-modal .modal-logo .logo-m {
+      width: 44px; height: 44px;
+      background: #000a33;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #00ffbf;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+    }
+    #user-modal .modal-logo .logo-text {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: #000a33;
+    }
+    #user-modal h2 {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #000a33;
+      margin-bottom: 10px;
+    }
+    #user-modal p {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    #user-modal input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: 'Inter', sans-serif;
+      color: #1a1a2e;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+    #user-modal input:focus { border-color: #000a33; }
+    #user-modal button {
+      width: 100%;
+      padding: 15px;
+      background: #000a33;
+      color: #00ffbf;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    #user-modal button:hover { background: #001166; transform: translateY(-1px); }
+    #user-modal .modal-note {
+      font-size: 12px;
+      color: #999;
+      margin-top: 14px;
+    }
+
+    /* ─── Header ─── */
+    header {
+      background: #000a33;
+      padding: 0 40px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .header-brand {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .header-logo {
+      width: 36px; height: 36px;
+      background: #00ffbf;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #000a33;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+    }
+    .header-title {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: #ffffff;
+    }
+    .header-title span { color: #00ffbf; }
+    .header-user {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .header-greeting {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+    }
+    .header-greeting strong {
+      color: #00ffbf;
+      font-weight: 600;
+    }
+    .header-progress-pill {
+      background: rgba(0,255,191,0.15);
+      border: 1px solid rgba(0,255,191,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 13px;
+      color: #00ffbf;
+      font-weight: 600;
+    }
+    .btn-reset {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-reset:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+    /* ─── Hero ─── */
+    .hero {
+      background: linear-gradient(135deg, #000a33 0%, #001166 60%, #000a33 100%);
+      padding: 60px 40px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,255,191,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,255,191,0.1);
+      border: 1px solid rgba(0,255,191,0.3);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 13px;
+      color: #00ffbf;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 46px);
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: #00ffbf; }
+    .hero-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,0.7);
+      max-width: 620px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+    .hero-personal {
+      display: inline-block;
+      background: rgba(0,255,191,0.12);
+      border: 1px solid rgba(0,255,191,0.25);
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.9);
+    }
+    .hero-personal strong { color: #00ffbf; }
+
+    /* ─── Progress Bar ─── */
+    .progress-section {
+      background: #ffffff;
+      border-bottom: 1px solid #e8e8e8;
+      padding: 20px 40px;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+    .progress-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .progress-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      white-space: nowrap;
+      min-width: 120px;
+    }
+    .progress-bar-wrap {
+      flex: 1;
+      height: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffbf, #00cc99);
+      border-radius: 5px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+    .progress-count {
+      font-size: 13px;
+      font-weight: 700;
+      color: #000a33;
+      white-space: nowrap;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    /* ─── Main Layout ─── */
+    .main-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ─── Sidebar Nav ─── */
+    .sidebar {
+      position: sticky;
+      top: 130px;
+    }
+    .sidebar-card {
+      background: #ffffff;
+      border: 1px solid #e8e8e8;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .sidebar-title {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #999;
+      margin-bottom: 16px;
+    }
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      color: #555;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .sidebar-nav li a:hover { background: #f0f0f0; color: #000a33; }
+    .sidebar-nav li a.active { background: #f0f4ff; color: #000a33; font-weight: 600; }
+    .sidebar-nav li a .nav-check {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      transition: all 0.3s;
+    }
+    .sidebar-nav li a .nav-check.done {
+      background: #00cc99;
+      border-color: #00cc99;
+      color: #fff;
+    }
+    .sidebar-nav li a .nav-num {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #f0f0f0;
+      color: #888;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ─── Content Area ─── */
+    .content { min-width: 0; }
+
+    /* ─── Phase Cards ─── */
+    .phase-card {
+      background: #ffffff;
+      border: 1px solid #e8e8e8;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s;
+    }
+    .phase-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .phase-card.completed { border-color: #00cc99; }
+    .phase-card.completed .phase-header { background: linear-gradient(135deg, #f0fdf9, #e6fff8); }
+
+    .phase-header {
+      padding: 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .phase-header:hover { background: #fafafa; }
+    .phase-card.completed .phase-header:hover { background: #e6fff8; }
+
+    .phase-num {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: #000a33;
+      color: #00ffbf;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .phase-card.completed .phase-num {
+      background: #00cc99;
+      color: #fff;
+    }
+
+    .phase-header-text { flex: 1; }
+    .phase-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+      margin-bottom: 4px;
+    }
+    .phase-title {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 19px;
+      color: #000a33;
+      margin-bottom: 6px;
+    }
+    .phase-desc {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .phase-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .phase-progress-pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      background: #f0f0f0;
+      color: #666;
+    }
+    .phase-card.completed .phase-progress-pill {
+      background: #d4f7ed;
+      color: #00916e;
+    }
+    .phase-chevron {
+      color: #bbb;
+      font-size: 18px;
+      transition: transform 0.3s;
+    }
+    .phase-card.open .phase-chevron { transform: rotate(180deg); }
+
+    .phase-body {
+      display: none;
+      padding: 0 28px 28px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .phase-card.open .phase-body { display: block; }
+
+    /* ─── Token Path Selector ─── */
+    .token-path-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0 8px;
+    }
+    .token-path-btn {
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fafafa;
+      text-align: left;
+    }
+    .token-path-btn:hover { border-color: #000a33; background: #f0f4ff; }
+    .token-path-btn.selected { border-color: #000a33; background: #f0f4ff; }
+    .token-path-btn.selected-advanced { border-color: #7c3aed; background: #faf5ff; }
+    .token-path-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .token-path-title {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #000a33;
+      margin-bottom: 4px;
+    }
+    .token-path-sub {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.4;
+    }
+    .token-path-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-quick { background: #fef3c7; color: #92400e; }
+    .badge-advanced { background: #ede9fe; color: #5b21b6; }
+
+    .token-section { display: none; }
+    .token-section.visible { display: block; }
+
+    .token-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin: 20px 0 16px;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .token-section-header.quick {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+    .token-section-header.advanced {
+      background: #faf5ff;
+      border: 1px solid #ddd6fe;
+      color: #5b21b6;
+    }
+    .token-sub-section {
+      margin: 20px 0 8px;
+      padding: 12px 16px;
+      background: #f8f8f8;
+      border-left: 3px solid #000a33;
+      border-radius: 0 8px 8px 0;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #000a33;
+    }
+
+    /* ─── Checklist Items ─── */
+    .checklist {
+      list-style: none;
+      margin: 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid #f0f0f0;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .checklist-item:hover { border-color: #d0d0d0; background: #f5f5f5; }
+    .checklist-item.checked {
+      background: #f0fdf9;
+      border-color: #a7f3d0;
+    }
+    .checklist-item.checked .item-text { color: #555; text-decoration: line-through; text-decoration-color: #aaa; }
+
+    .check-box {
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      border: 2px solid #d0d0d0;
+      background: #fff;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      margin-top: 1px;
+    }
+    .checklist-item.checked .check-box {
+      background: #00cc99;
+      border-color: #00cc99;
+    }
+    .check-icon {
+      display: none;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .checklist-item.checked .check-icon { display: block; }
+
+    .item-content { flex: 1; min-width: 0; }
+    .item-text {
+      font-size: 14px;
+      color: #1a1a2e;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .item-text code {
+      background: #f0f0f0;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #c0392b;
+    }
+    .item-note {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* ─── Resource Links ─── */
+    .resource-block {
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: #f8f9ff;
+      border: 1px solid #e0e4ff;
+      border-radius: 10px;
+    }
+    .resource-block-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #000a33;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .resource-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .resource-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #2563eb;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .resource-link:hover { color: #1d4ed8; }
+    .resource-link::before {
+      content: '→';
+      font-size: 12px;
+      color: #93c5fd;
+    }
+
+    /* ─── Warning / Info Callouts ─── */
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin: 16px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-text { color: #444; }
+    .callout-text strong { color: #1a1a2e; }
+    .callout.warning { background: #fffbeb; border: 1px solid #fde68a; }
+    .callout.info { background: #eff6ff; border: 1px solid #bfdbfe; }
+    .callout.success { background: #f0fdf9; border: 1px solid #a7f3d0; }
+    .callout.purple { background: #faf5ff; border: 1px solid #ddd6fe; }
+
+    /* ─── Permission Tags ─── */
+    .perm-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .perm-tag {
+      background: #1a1a2e;
+      color: #00ffbf;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    /* ─── What You Can Do Section ─── */
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .capability-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #f8f8f8;
+      border-radius: 10px;
+      border: 1px solid #eee;
+    }
+    .capability-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .capability-text {
+      font-size: 13px;
+      color: #444;
+      line-height: 1.4;
+    }
+    .capability-text strong {
+      display: block;
+      color: #1a1a2e;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    /* ─── Troubleshooting ─── */
+    .trouble-item {
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid #e8e8e8;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .trouble-q {
+      font-weight: 600;
+      font-size: 14px;
+      color: #000a33;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .trouble-a {
+      display: none;
+      font-size: 13px;
+      color: #555;
+      margin-top: 10px;
+      line-height: 1.6;
+      padding-top: 10px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .trouble-item.open .trouble-a { display: block; }
+    .trouble-chevron { transition: transform 0.2s; color: #bbb; }
+    .trouble-item.open .trouble-chevron { transform: rotate(180deg); }
+
+    /* ─── Completion Banner ─── */
+    #completion-banner {
+      display: none;
+      background: linear-gradient(135deg, #000a33, #001166);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 24px;
+      border: 1px solid rgba(0,255,191,0.2);
+    }
+    #completion-banner.visible { display: block; }
+    #completion-banner h2 {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    #completion-banner h2 span { color: #00ffbf; }
+    #completion-banner p {
+      color: rgba(255,255,255,0.7);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    #completion-banner .confetti { font-size: 40px; margin-bottom: 16px; }
+
+    /* ─── CTA Banners ─── */
+    .tam-cta {
+      background: linear-gradient(135deg, #ff6b35 0%, #e8450a 100%);
+      border-radius: 16px;
+      padding: 32px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(232,69,10,0.25);
+    }
+    .tam-cta-hero {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 28px;
+      backdrop-filter: blur(4px);
+    }
+    .tam-cta-text .cta-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 6px;
+    }
+    .tam-cta-text h3 {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tam-cta-text p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+      max-width: 480px;
+    }
+    .tam-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #e8450a;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+    .tam-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .tam-cta-btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #00ffbf;
+      color: #000a33;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(0,255,191,0.3);
+      flex-shrink: 0;
+    }
+    .tam-cta-btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,255,191,0.4); }
+    .tam-cta-completion {
+      background: linear-gradient(135deg, #ff6b35 0%, #e8450a 100%);
+      border-radius: 16px;
+      padding: 36px;
+      text-align: center;
+      margin-top: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(232,69,10,0.3);
+    }
+    .tam-cta-completion .cta-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 10px;
+    }
+    .tam-cta-completion h3 {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 900;
+      font-size: 26px;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .tam-cta-completion p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.6;
+      max-width: 520px;
+      margin: 0 auto 24px;
+    }
+    .tam-cta-btn-large {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: #e8450a;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 18px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .tam-cta-btn-large:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.25); }
+    @media (max-width: 768px) {
+      .tam-cta, .tam-cta-hero { flex-direction: column; text-align: center; }
+      .tam-cta-text p { max-width: 100%; }
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      background: #000a33;
+      padding: 32px 40px;
+      text-align: center;
+    }
+    footer p {
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+    }
+    footer a { color: #00ffbf; text-decoration: none; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .main-wrap { grid-template-columns: 1fr; padding: 24px 20px 60px; }
+      .sidebar { position: static; }
+      .hero { padding: 40px 20px 36px; }
+      .progress-section { padding: 16px 20px; }
+      header { padding: 0 20px; }
+      .token-path-selector { grid-template-columns: 1fr; }
+      .capabilities-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Header ─── -->
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-logo">M</div>
+      <div class="header-title">Meta Ads <span>×</span> Manus Setup</div>
+    </div>
+    <div class="header-user">
+      <span class="header-progress-pill" id="header-progress-pill">0 / 0 done</span>
+      <button class="btn-reset" onclick="resetProgress()">Reset Progress</button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── Progress Bar ─── -->
+<div class="progress-section">
+  <div class="progress-inner">
+    <span class="progress-label" id="progress-label">Getting started…</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar-fill"></div>
+    </div>
+    <span class="progress-count" id="progress-count">0 / 0 steps</span>
+  </div>
+</div>
+
+<!-- ─── Hero ─── -->
+<div class="hero">
+  <div class="hero-badge">📋 Step-by-Step Checklist Guide</div>
+  <h1>Connect <span>Meta Ads Manager</span><br/>to Manus</h1>
+  <p class="hero-sub">Everything you need to set up your Meta Developer App, generate your access token, and connect Manus so you can launch, pause, and manage ads with AI.</p>
+  <!-- CTA 1: Hero — subtle, inside the hero banner -->
+  <div class="tam-cta-hero">
+    <div class="tam-cta-text">
+      <div class="cta-eyebrow">The Agency Mentor &mdash; Oz &amp; NZ Agency Community</div>
+      <h3>Want to scale your agency with AI-powered systems?</h3>
+      <p>Join agency owners across Australia &amp; New Zealand who are using Manus, Meta Ads, and automation to grow faster with less overhead.</p>
+    </div>
+    <a href="https://theagencymentor.com.au/agency-audit-and-growth-call" target="_blank" class="tam-cta-btn-hero">Book a Free Growth Call &rarr;</a>
+  </div>
+</div>
+
+<!-- ─── Main Layout ─── -->
+<div class="main-wrap">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">Phases</div>
+      <ul class="sidebar-nav" id="sidebar-nav">
+        <li><a href="#phase-0"><span class="nav-check" id="nav-check-0"></span> Prerequisites</a></li>
+        <li><a href="#phase-1"><span class="nav-check" id="nav-check-1"></span> Register as Developer</a></li>
+        <li><a href="#phase-2"><span class="nav-check" id="nav-check-2"></span> Create Your App</a></li>
+        <li><a href="#phase-3"><span class="nav-check" id="nav-check-3"></span> Add Marketing API</a></li>
+        <li><a href="#phase-4"><span class="nav-check" id="nav-check-4"></span> Generate Token</a></li>
+        <li><a href="#phase-5"><span class="nav-check" id="nav-check-5"></span> Connect in Manus</a></li>
+        <li><a href="#phase-6"><span class="nav-check" id="nav-check-6"></span> Advanced MCP Config</a></li>
+        <li><a href="#phase-7"><span class="nav-check" id="nav-check-7"></span> Test Connection</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Completion Banner -->
+    <div id="completion-banner">
+      <div class="confetti">🎉</div>
+      <h2>Setup <span>Complete!</span></h2>
+      <p id="completion-text">You're all connected. Manus can now read, analyse, launch, pause, and manage your Meta Ads campaigns. Time to put it to work.</p>
+      <!-- CTA 3: Inside completion banner -->
+      <div class="tam-cta-completion">
+        <div class="cta-eyebrow">The Agency Mentor &mdash; Oz &amp; NZ Agency Community</div>
+        <h3>You're set up. Now let's scale.</h3>
+        <p>You've just built the same AI-powered ads infrastructure that top agencies across Australia &amp; New Zealand are using to grow. Book a free audit call and let's map out your agency's next stage of growth.</p>
+        <a href="https://theagencymentor.com.au/agency-audit-and-growth-call" target="_blank" class="tam-cta-btn-large">Join the Community &amp; Book Your Free Call &rarr;</a>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 0: Prerequisites ─── -->
+    <div class="phase-card open" id="phase-0">
+      <div class="phase-header" onclick="togglePhase('phase-0')">
+        <div class="phase-num">0</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Before You Begin</div>
+          <div class="phase-title">Prerequisites</div>
+          <div class="phase-desc">Make sure you have everything in place before starting. This will save you time.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-0">0 / 5</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <ul class="checklist" id="checklist-phase-0">
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-0">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">You have an active Facebook / Meta personal account</div>
+              <div class="item-note">This is the account you'll use to log in to Meta for Developers and Business Manager.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-0">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">You have an active Meta Ads Manager account with at least one ad account</div>
+              <div class="item-note">Your ad account ID will be needed — format: <code>act_XXXXXXXXXX</code></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-0">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">You have a Meta Business Manager account set up at business.facebook.com</div>
+              <div class="item-note">Required for System User creation and asset management in the Advanced token path.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-0">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">You have a Manus account at manus.im (Pro plan or higher recommended)</div>
+              <div class="item-note">The Meta Ads MCP connector requires a plan that supports MCP integrations.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-0">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">You know your Ad Account ID — find it in Ads Manager → Settings → Account ID</div>
+              <div class="item-note">Write it down now: it looks like <code>act_1234567890</code></div>
+            </div>
+          </li>
+        </ul>
+        <div class="resource-block">
+          <div class="resource-block-title">🔗 Quick Links</div>
+          <div class="resource-links">
+            <a class="resource-link" href="https://adsmanager.facebook.com" target="_blank">Meta Ads Manager</a>
+            <a class="resource-link" href="https://business.facebook.com" target="_blank">Meta Business Manager</a>
+            <a class="resource-link" href="https://manus.im" target="_blank">Manus — Sign In or Sign Up</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 1: Register as Developer ─── -->
+    <div class="phase-card" id="phase-1">
+      <div class="phase-header" onclick="togglePhase('phase-1')">
+        <div class="phase-num">1</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Phase 1</div>
+          <div class="phase-title">Register as a Meta Developer</div>
+          <div class="phase-desc">Create your Meta for Developers account — this is the portal where you'll build and manage your app.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-1">0 / 4</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="callout info">
+          <span class="callout-icon">ℹ️</span>
+          <span class="callout-text">If you've already built apps on Meta for Developers before, you can skip this phase. Just make sure you're logged in at <strong>developers.facebook.com</strong>.</span>
+        </div>
+        <ul class="checklist" id="checklist-phase-1">
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-1">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Go to <strong>developers.facebook.com</strong> and click "Get Started" in the top right</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-1">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Log in with your Facebook account (the one linked to your business and Ads Manager)</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-1">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Accept the Meta Platform Terms and Developer Policies when prompted</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-1">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Confirm your email address if prompted — check your inbox for the verification email</div>
+            </div>
+          </li>
+        </ul>
+        <div class="resource-block">
+          <div class="resource-block-title">🔗 Quick Links</div>
+          <div class="resource-links">
+            <a class="resource-link" href="https://developers.facebook.com" target="_blank">Meta for Developers — Home</a>
+            <a class="resource-link" href="https://developers.facebook.com/docs/development/register/" target="_blank">Register as a Developer — Official Docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 2: Create App ─── -->
+    <div class="phase-card" id="phase-2">
+      <div class="phase-header" onclick="togglePhase('phase-2')">
+        <div class="phase-num">2</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Phase 2</div>
+          <div class="phase-title">Create Your Meta Developer App</div>
+          <div class="phase-desc">This app is what connects Manus to your Meta Ads account. You'll select the Marketing API use case to get the right permissions automatically.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-2">0 / 9</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <span class="callout-text"><strong>App Review is NOT required</strong> for personal or internal use. You only need App Review if other people outside your business will use your app. For connecting Manus to your own ad account, you're good to go without it.</span>
+        </div>
+        <ul class="checklist" id="checklist-phase-2">
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Go to <strong>developers.facebook.com/apps/creation/</strong> to start creating your app</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Click <strong>"Create App"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Enter your App Name (e.g. <code>Manus Ads Manager</code>) and a contact email address — click <strong>"Next"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Under <strong>Use Cases</strong>, select: <strong>"Create &amp; manage ads with Marketing API"</strong></div>
+              <div class="item-note">This automatically adds: ads_management, ads_read, business_management, pages_show_list permissions.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">(Optional) Also select: <strong>"Measure ad performance data with Marketing API"</strong> for enhanced reporting access</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Click <strong>"Next"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Under <strong>Business</strong>, select your existing Business Manager / Business Portfolio — click <strong>"Next"</strong></div>
+              <div class="item-note">If you don't have one, select "Create a business portfolio" and follow the prompts.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Review requirements → click <strong>"Next"</strong> → Review overview → click <strong>"Go to Dashboard"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-2">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Note your <strong>App ID</strong> from the top of the App Dashboard — you'll need this later</div>
+              <div class="item-note">It's a long number displayed at the top of the dashboard, e.g. 1234567890123456</div>
+            </div>
+          </li>
+        </ul>
+        <div class="resource-block">
+          <div class="resource-block-title">🔗 Quick Links</div>
+          <div class="resource-links">
+            <a class="resource-link" href="https://developers.facebook.com/apps/creation/" target="_blank">Create a New App — Meta for Developers</a>
+            <a class="resource-link" href="https://developers.facebook.com/apps/" target="_blank">Your App Dashboard</a>
+            <a class="resource-link" href="https://developers.facebook.com/docs/development/create-an-app/" target="_blank">Create an App — Official Docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 3: Add Marketing API ─── -->
+    <div class="phase-card" id="phase-3">
+      <div class="phase-header" onclick="togglePhase('phase-3')">
+        <div class="phase-num">3</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Phase 3</div>
+          <div class="phase-title">Add the Marketing API Product</div>
+          <div class="phase-desc">Activate the Marketing API product inside your app and locate your App ID and App Secret — the credentials you'll need for token generation.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-3">0 / 4</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <ul class="checklist" id="checklist-phase-3">
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Inside your App Dashboard, click <strong>"Add Product"</strong> in the left sidebar</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Find <strong>"Marketing API"</strong> in the product list and click <strong>"Set Up"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">In the left sidebar, go to <strong>App Settings → Basic</strong> — note your <strong>App ID</strong> and <strong>App Secret</strong></div>
+              <div class="item-note">Click "Show" next to App Secret to reveal it. Keep this private — never share it publicly.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-3">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Save your App ID and App Secret somewhere secure (e.g. a password manager)</div>
+            </div>
+          </li>
+        </ul>
+        <div class="callout warning">
+          <span class="callout-icon">⚠️</span>
+          <span class="callout-text"><strong>Keep your App Secret private.</strong> Anyone with your App Secret can generate tokens on behalf of your app. Never commit it to code or share it in messages.</span>
+        </div>
+        <div class="resource-block">
+          <div class="resource-block-title">🔗 Quick Links</div>
+          <div class="resource-links">
+            <a class="resource-link" href="https://developers.facebook.com/apps/" target="_blank">Your App Dashboard</a>
+            <a class="resource-link" href="https://developers.facebook.com/docs/marketing-api/" target="_blank">Marketing API — Official Docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA 2: Mid-guide — between Phase 3 and Phase 4 -->
+    <div class="tam-cta">
+      <div class="tam-cta-text">
+        <div class="cta-eyebrow">The Agency Mentor &mdash; Oz &amp; NZ Agency Community</div>
+        <h3>Running an agency in Australia or New Zealand?</h3>
+        <p>Watch our free VSL and book a no-obligation growth call. We'll show you how to systemise your agency with AI, Meta Ads, and automation — so you can scale without burning out.</p>
+      </div>
+      <a href="https://theagencymentor.com.au/agency-audit-and-growth-call" target="_blank" class="tam-cta-btn">Watch the VSL &amp; Book a Call &rarr;</a>
+    </div>
+
+    <!-- ─── PHASE 4: Token Generation ─── -->
+    <div class="phase-card" id="phase-4">
+      <div class="phase-header" onclick="togglePhase('phase-4')">
+        <div class="phase-num">4</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Phase 4 — Choose Your Path</div>
+          <div class="phase-title">Generate Your Access Token</div>
+          <div class="phase-desc">There are two paths. Quick Start gets you running in minutes. Advanced sets up a permanent, non-expiring token for ongoing automation.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-4">0 / 0</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+
+        <div class="token-path-selector">
+          <div class="token-path-btn" id="btn-quick" onclick="selectTokenPath('quick')">
+            <div class="token-path-icon">⚡</div>
+            <div class="token-path-title">Quick Start</div>
+            <div class="token-path-sub">Generate a token directly from the Graph API Explorer. Fast to set up, ideal for testing.</div>
+            <span class="token-path-badge badge-quick">Expires ~60 min</span>
+          </div>
+          <div class="token-path-btn" id="btn-advanced" onclick="selectTokenPath('advanced')">
+            <div class="token-path-icon">🔐</div>
+            <div class="token-path-title">Advanced — System User</div>
+            <div class="token-path-sub">Create a System User in Business Manager and generate a token that never expires.</div>
+            <span class="token-path-badge badge-advanced">Never Expires</span>
+          </div>
+        </div>
+
+        <!-- QUICK START PATH -->
+        <div class="token-section" id="section-quick">
+          <div class="token-section-header quick">
+            ⚡ Quick Start — Short-Lived User Token
+          </div>
+          <div class="callout warning">
+            <span class="callout-icon">⏱️</span>
+            <span class="callout-text">This token expires in approximately <strong>60 minutes</strong>. It's great for testing your connection and getting familiar with what Manus can do. For ongoing automation, use the Advanced path to generate a permanent token.</span>
+          </div>
+          <ul class="checklist" id="checklist-quick">
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Go to the <strong>Graph API Explorer</strong> at developers.facebook.com/tools/explorer/</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">In the top-right dropdown, select <strong>your app</strong> from the "Meta App" list</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Click <strong>"Generate Access Token"</strong> — a Facebook login popup will appear</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Add the following permissions before generating:</div>
+                <div class="perm-list">
+                  <span class="perm-tag">ads_management</span>
+                  <span class="perm-tag">ads_read</span>
+                  <span class="perm-tag">business_management</span>
+                  <span class="perm-tag">pages_show_list</span>
+                  <span class="perm-tag">pages_read_engagement</span>
+                </div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Click <strong>"Generate Access Token"</strong> — log in and grant permissions when prompted</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Copy the generated token and save it somewhere accessible — you'll paste it into Manus next</div>
+                <div class="item-note">Remember: this token expires in ~60 minutes. Regenerate it each session if needed.</div>
+              </div>
+            </li>
+          </ul>
+          <div class="resource-block">
+            <div class="resource-block-title">🔗 Quick Links</div>
+            <div class="resource-links">
+              <a class="resource-link" href="https://developers.facebook.com/tools/explorer/" target="_blank">Graph API Explorer</a>
+              <a class="resource-link" href="https://developers.facebook.com/docs/facebook-login/guides/access-tokens/" target="_blank">Access Token Guide — Official Docs</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADVANCED PATH -->
+        <div class="token-section" id="section-advanced">
+          <div class="token-section-header advanced">
+            🔐 Advanced — System User Token (Permanent, Never Expires)
+          </div>
+          <div class="callout purple">
+            <span class="callout-icon">🔐</span>
+            <span class="callout-text">System User tokens do not expire based on time. They represent a <strong>server or software identity</strong> rather than a personal user — making them perfect for ongoing automation with Manus. They can only be invalidated if you change app permissions, delete the app, or modify business ownership.</span>
+          </div>
+
+          <div class="token-sub-section">Step A — Create a System User in Business Manager</div>
+          <ul class="checklist" id="checklist-advanced-a">
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Go to <strong>business.facebook.com/settings/</strong> and log in</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">In the left sidebar, click <strong>Users → System Users</strong></div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Click <strong>"Add"</strong> — enter a name (e.g. <code>Manus API User</code>)</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Set the role to <strong>Admin</strong> — click <strong>"Create System User"</strong></div>
+                <div class="item-note">Admin role is required for full ads management access including creating and pausing ads.</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="token-sub-section">Step B — Assign Your App to the System User</div>
+          <ul class="checklist" id="checklist-advanced-b">
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Select the System User you just created — click <strong>"Add Assets"</strong></div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Choose <strong>"Apps"</strong> from the asset type list — select the Meta App you created in Phase 2</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Enable <strong>"Manage App (Full Control)"</strong> — click <strong>"Save Changes"</strong></div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="token-sub-section">Step C — Assign Your Ad Account to the System User</div>
+          <ul class="checklist" id="checklist-advanced-c">
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Click <strong>"Add Assets"</strong> again — choose <strong>"Ad Accounts"</strong></div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Select your Ad Account — enable <strong>"Manage Ad Account"</strong> (full control)</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Click <strong>"Save Changes"</strong></div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="token-sub-section">Step D — Generate the Permanent Token</div>
+          <ul class="checklist" id="checklist-advanced-d">
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Select your System User — click <strong>"Generate New Token"</strong></div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Select your App from the dropdown</div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Enable ALL of the following permissions:</div>
+                <div class="perm-list">
+                  <span class="perm-tag">ads_management</span>
+                  <span class="perm-tag">ads_read</span>
+                  <span class="perm-tag">business_management</span>
+                  <span class="perm-tag">pages_show_list</span>
+                  <span class="perm-tag">pages_read_engagement</span>
+                  <span class="perm-tag">read_insights</span>
+                </div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text">Set token expiry to <strong>"Never"</strong> — click <strong>"Generate Token"</strong></div>
+              </div>
+            </li>
+            <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-4">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <div class="item-content">
+                <div class="item-text"><strong>Copy and save your token immediately</strong> — Meta will NOT show it again after you close this window</div>
+                <div class="item-note">Store it in a password manager (1Password, Bitwarden, etc.) — you'll need it for the Manus MCP configuration.</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="callout success">
+            <span class="callout-icon">✅</span>
+            <span class="callout-text">You now have a permanent System User token. This token will keep Manus connected to your Meta Ads account indefinitely without needing to re-authenticate.</span>
+          </div>
+
+          <div class="resource-block">
+            <div class="resource-block-title">🔗 Quick Links</div>
+            <div class="resource-links">
+              <a class="resource-link" href="https://business.facebook.com/settings/" target="_blank">Meta Business Settings — System Users</a>
+              <a class="resource-link" href="https://developers.facebook.com/docs/marketing-api/system-users/" target="_blank">System Users — Official Docs</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── PHASE 5: Connect in Manus ─── -->
+    <div class="phase-card" id="phase-5">
+      <div class="phase-header" onclick="togglePhase('phase-5')">
+        <div class="phase-num">5</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Phase 5</div>
+          <div class="phase-title">Connect Meta Ads Manager in Manus</div>
+          <div class="phase-desc">Use Manus's built-in Meta Ads Manager connector. This is the easiest connection method — it uses OAuth and takes about 2 minutes.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-5">0 / 7</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="callout info">
+          <span class="callout-icon">ℹ️</span>
+          <span class="callout-text">The built-in connector uses Meta's OAuth flow — the same secure login method used by major platforms. <strong>Manus never sees your password.</strong> You control exactly what Manus can access and can revoke access at any time.</span>
+        </div>
+        <ul class="checklist" id="checklist-phase-5">
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Log in to your Manus account at <strong>manus.im</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Click your profile icon (top right) → select <strong>"Settings"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Navigate to the <strong>"Connectors"</strong> section in Settings</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Scroll through the connectors list and find <strong>"Meta Ads Manager"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Click <strong>"Connect"</strong> — a Meta OAuth login window will appear</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Log in with your Facebook account and grant the requested permissions — select the Ad Account(s) you want Manus to access</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-5">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Click <strong>"Confirm"</strong> — Meta Ads Manager should now show as <strong>"Connected"</strong> ✓</div>
+            </div>
+          </li>
+        </ul>
+        <div class="resource-block">
+          <div class="resource-block-title">🔗 Quick Links</div>
+          <div class="resource-links">
+            <a class="resource-link" href="https://manus.im" target="_blank">Manus — Log In</a>
+            <a class="resource-link" href="https://manus.im/docs/integrations/mcp-connectors" target="_blank">MCP Connectors — Manus Docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 6: Advanced MCP Config ─── -->
+    <div class="phase-card" id="phase-6">
+      <div class="phase-header" onclick="togglePhase('phase-6')">
+        <div class="phase-num">6</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Phase 6 — Advanced / Optional</div>
+          <div class="phase-title">Configure Custom MCP with System User Token</div>
+          <div class="phase-desc">If you generated a permanent System User token in Phase 4, you can configure it directly in Manus as a Custom MCP for fully persistent, uninterrupted automation.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-6">0 / 5</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="callout purple">
+          <span class="callout-icon">🔐</span>
+          <span class="callout-text"><strong>This phase is optional</strong> but highly recommended if you want Manus to run automated reports, launch ads, and manage campaigns without ever needing to re-authenticate. This is how the full "set and forget" automation is achieved.</span>
+        </div>
+        <ul class="checklist" id="checklist-phase-6">
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-6">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">In Manus Settings → Connectors, click the <strong>"Custom MCP"</strong> tab</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-6">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Click <strong>"Add Custom MCP Server"</strong></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-6">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Enter the server name: <code>meta-marketing</code></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-6">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Enter your System User access token and Ad Account ID in the configuration fields</div>
+              <div class="item-note">Your Ad Account ID format: <code>act_XXXXXXXXXX</code> — found in Ads Manager → Settings</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-6">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Click <strong>"Save"</strong> — the custom MCP server is now active</div>
+            </div>
+          </li>
+        </ul>
+        <div class="resource-block">
+          <div class="resource-block-title">🔗 Quick Links</div>
+          <div class="resource-links">
+            <a class="resource-link" href="https://manus.im/docs/integrations/mcp-connectors" target="_blank">MCP Connectors — Manus Docs</a>
+            <a class="resource-link" href="https://developers.facebook.com/docs/marketing-api/system-users/" target="_blank">System Users — Official Docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 7: Test Connection ─── -->
+    <div class="phase-card" id="phase-7">
+      <div class="phase-header" onclick="togglePhase('phase-7')">
+        <div class="phase-num">7</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Phase 7</div>
+          <div class="phase-title">Test Your Connection</div>
+          <div class="phase-desc">Verify everything is working by running a few test prompts in Manus. Start simple, then try an action to confirm full read/write access.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-progress-pill" id="pill-phase-7">0 / 5</span>
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <ul class="checklist" id="checklist-phase-7">
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-7">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Start a new Manus task and type: <em>"Using my Meta Ads connection, show me all active campaigns in my ad account"</em></div>
+              <div class="item-note">Manus should return a list of your campaigns with status and spend data.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-7">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Try: <em>"What is my total ad spend in the last 7 days?"</em></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-7">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Try: <em>"Show me my top performing ads by Cost Per Lead this month"</em></div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-7">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Try an action: <em>"Pause ad [name of an ad]"</em> — confirm Manus can take write actions, not just read data</div>
+              <div class="item-note">Only do this on an ad you're comfortable pausing temporarily for the test.</div>
+            </div>
+          </li>
+          <li class="checklist-item" onclick="toggleCheck(this)" data-phase="phase-7">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">Connection confirmed — Manus can read and manage your Meta Ads ✓</div>
+            </div>
+          </li>
+        </ul>
+
+        <div style="margin-top: 28px;">
+          <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;color:#000a33;margin-bottom:16px;">What You Can Now Do with Manus + Meta Ads</div>
+          <div class="capabilities-grid">
+            <div class="capability-item">
+              <div class="capability-icon">📊</div>
+              <div class="capability-text"><strong>Performance Reports</strong>Pull CPL, CPSA, spend, leads, and frequency — on demand or on a schedule.</div>
+            </div>
+            <div class="capability-item">
+              <div class="capability-icon">🚀</div>
+              <div class="capability-text"><strong>Launch Campaigns</strong>Create and launch new ad campaigns, ad sets, and ads from a single prompt.</div>
+            </div>
+            <div class="capability-item">
+              <div class="capability-icon">⏸️</div>
+              <div class="capability-text"><strong>Pause / Activate Ads</strong>Turn individual ads, ad sets, or campaigns on and off instantly.</div>
+            </div>
+            <div class="capability-item">
+              <div class="capability-icon">🔁</div>
+              <div class="capability-text"><strong>Duplicate Winners</strong>Clone top-performing ad sets and scale budgets programmatically.</div>
+            </div>
+            <div class="capability-item">
+              <div class="capability-icon">🎨</div>
+              <div class="capability-text"><strong>Creative Fatigue Analysis</strong>Identify ads with rising frequency and declining CTR before they hurt performance.</div>
+            </div>
+            <div class="capability-item">
+              <div class="capability-icon">🗓️</div>
+              <div class="capability-text"><strong>Scheduled Reports</strong>Set Manus to deliver weekly or monthly performance summaries automatically.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TROUBLESHOOTING ─── -->
+    <div class="phase-card" id="phase-trouble">
+      <div class="phase-header" onclick="togglePhase('phase-trouble')">
+        <div class="phase-num" style="background:#666;">?</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Reference</div>
+          <div class="phase-title">Troubleshooting &amp; FAQs</div>
+          <div class="phase-desc">Common issues and how to fix them.</div>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-chevron">▼</span>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="trouble-item" onclick="toggleTrouble(this)">
+          <div class="trouble-q">My token expired — how do I get a new one? <span class="trouble-chevron">▼</span></div>
+          <div class="trouble-a">If you used the Quick Start path, go back to the Graph API Explorer (developers.facebook.com/tools/explorer/) and generate a new token. If you used the Advanced System User path, your token should never expire — but if it has been invalidated, go to Business Manager → System Users and generate a new token for the same System User.</div>
+        </div>
+        <div class="trouble-item" onclick="toggleTrouble(this)">
+          <div class="trouble-q">I'm getting "Permission Denied" errors in Manus <span class="trouble-chevron">▼</span></div>
+          <div class="trouble-a">Check that: (1) Your System User has the "Admin" role in Business Manager. (2) The System User has been assigned to the correct Ad Account with "Manage Ad Account" access. (3) Your token includes all the required permissions: ads_management, ads_read, business_management, pages_show_list, pages_read_engagement.</div>
+        </div>
+        <div class="trouble-item" onclick="toggleTrouble(this)">
+          <div class="trouble-q">Manus can't see my ad account <span class="trouble-chevron">▼</span></div>
+          <div class="trouble-a">Make sure the ad account has been added as an asset to your System User in Business Manager. Go to Business Settings → System Users → select your user → Add Assets → Ad Accounts → select your account and enable full access.</div>
+        </div>
+        <div class="trouble-item" onclick="toggleTrouble(this)">
+          <div class="trouble-q">Do I need App Review to use this? <span class="trouble-chevron">▼</span></div>
+          <div class="trouble-a">No. App Review is only required if people outside your business will log in and use your app. For connecting Manus to your own ad account (internal use), you do not need App Review. You can use the app in Development Mode indefinitely for your own accounts.</div>
+        </div>
+        <div class="trouble-item" onclick="toggleTrouble(this)">
+          <div class="trouble-q">I've hit the app limit (15 apps) <span class="trouble-chevron">▼</span></div>
+          <div class="trouble-a">You can have a maximum of 15 apps not connected to a verified business portfolio. To resolve this: (1) Connect a verified business portfolio to existing apps, (2) Delete old or unused apps (note: archived apps still count), or (3) Remove yourself as admin/developer from apps you no longer need.</div>
+        </div>
+        <div class="trouble-item" onclick="toggleTrouble(this)">
+          <div class="trouble-q">My System User token was invalidated unexpectedly <span class="trouble-chevron">▼</span></div>
+          <div class="trouble-a">System User tokens can be invalidated if: (1) App permissions were changed, (2) The Meta App was edited or removed, (3) Page or ad account access was revoked, or (4) Business ownership was modified. Generate a new token from Business Manager → System Users → Generate New Token.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA 4: After troubleshooting — final persistent CTA -->
+    <div class="tam-cta" style="margin-top:24px;">
+      <div class="tam-cta-text">
+        <div class="cta-eyebrow">The Agency Mentor &mdash; Oz &amp; NZ Agency Community</div>
+        <h3>Want the full agency growth system?</h3>
+        <p>This setup is just the beginning. Join agency owners across Oz &amp; NZ who are using AI, automation, and Meta Ads to build scalable, profitable agencies. Watch the VSL and book your free growth audit call.</p>
+      </div>
+      <a href="https://theagencymentor.com.au/agency-audit-and-growth-call" target="_blank" class="tam-cta-btn">Watch the VSL &amp; Book a Call &rarr;</a>
+    </div>
+
+  </div><!-- end .content -->
+</div><!-- end .main-wrap -->
+
+<footer>
+  <p>Built for <a href="https://manus.im" target="_blank">Manus</a> × <a href="https://developers.facebook.com" target="_blank">Meta for Developers</a> — Your progress is saved locally in your browser.</p>
+</footer>
+
+<script>
+  // ─── State Management ───
+  const STORAGE_KEY = 'meta-manus-guide-v1';
+
+  function getState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch(e) { return {}; }
+  }
+
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  // ─── User Setup ───
+  // (name modal removed)
+
+  // ─── Phase Toggle ───
+  function togglePhase(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+
+  // ─── Checklist Toggle ───
+  function toggleCheck(item) {
+    item.classList.toggle('checked');
+    saveChecklist();
+    updateProgress();
+  }
+
+  function saveChecklist() {
+    const state = getState();
+    state.checked = {};
+    document.querySelectorAll('.checklist-item').forEach((item, idx) => {
+      state.checked[idx] = item.classList.contains('checked');
+    });
+    saveState(state);
+  }
+
+  function loadChecklist() {
+    const state = getState();
+    if (!state.checked) return;
+    document.querySelectorAll('.checklist-item').forEach((item, idx) => {
+      if (state.checked[idx]) item.classList.add('checked');
+    });
+  }
+
+  // ─── Token Path Selection ───
+  let selectedPath = null;
+
+  function selectTokenPath(path) {
+    selectedPath = path;
+    document.getElementById('btn-quick').classList.remove('selected', 'selected-advanced');
+    document.getElementById('btn-advanced').classList.remove('selected', 'selected-advanced');
+    document.getElementById('section-quick').classList.remove('visible');
+    document.getElementById('section-advanced').classList.remove('visible');
+
+    if (path === 'quick') {
+      document.getElementById('btn-quick').classList.add('selected');
+      document.getElementById('section-quick').classList.add('visible');
+    } else {
+      document.getElementById('btn-advanced').classList.add('selected-advanced');
+      document.getElementById('section-advanced').classList.add('visible');
+    }
+
+    const state = getState();
+    state.tokenPath = path;
+    saveState(state);
+    updateProgress();
+  }
+
+  function loadTokenPath() {
+    const state = getState();
+    if (state.tokenPath) selectTokenPath(state.tokenPath);
+  }
+
+  // ─── Progress Calculation ───
+  function updateProgress() {
+    const allItems = document.querySelectorAll('.checklist-item');
+    const visibleItems = Array.from(allItems).filter(item => {
+      // Only count items in visible sections
+      const section = item.closest('.token-section');
+      if (section) return section.classList.contains('visible');
+      return true;
+    });
+    const checkedItems = visibleItems.filter(item => item.classList.contains('checked'));
+    const total = visibleItems.length;
+    const done = checkedItems.length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById('progress-bar-fill').style.width = pct + '%';
+    document.getElementById('progress-count').textContent = done + ' / ' + total + ' steps';
+    document.getElementById('header-progress-pill').textContent = done + ' / ' + total + ' done';
+
+    if (pct === 0) {
+      document.getElementById('progress-label').textContent = 'Getting started…';
+    } else if (pct < 25) {
+      document.getElementById('progress-label').textContent = 'Just getting going…';
+    } else if (pct < 50) {
+      document.getElementById('progress-label').textContent = 'Making progress!';
+    } else if (pct < 75) {
+      document.getElementById('progress-label').textContent = 'Halfway there!';
+    } else if (pct < 100) {
+      document.getElementById('progress-label').textContent = 'Almost done!';
+    } else {
+      document.getElementById('progress-label').textContent = 'Setup complete! 🎉';
+    }
+
+    // Update phase pills
+    updatePhasePills();
+
+    // Update sidebar checks
+    updateSidebarChecks();
+
+    // Show/hide completion banner
+    const banner = document.getElementById('completion-banner');
+    if (pct === 100 && total > 0) {
+      banner.classList.add('visible');
+      const state = getState();
+      const name = state.userName || 'there';
+      document.getElementById('completion-text').textContent =
+        "You're all set, " + name + "! Manus can now read, analyse, launch, pause, and manage your Meta Ads campaigns. Time to put it to work.";
+      banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      banner.classList.remove('visible');
+    }
+  }
+
+  function updatePhasePills() {
+    const phases = ['phase-0','phase-1','phase-2','phase-3','phase-4','phase-5','phase-6','phase-7'];
+    phases.forEach(phaseId => {
+      const card = document.getElementById(phaseId);
+      if (!card) return;
+      const pill = document.getElementById('pill-' + phaseId);
+      if (!pill) return;
+
+      // Get all checklist items for this phase
+      let items = [];
+      if (phaseId === 'phase-4') {
+        // Special handling for token path phase
+        if (selectedPath === 'quick') {
+          items = Array.from(document.querySelectorAll('#checklist-quick .checklist-item'));
+        } else if (selectedPath === 'advanced') {
+          items = [
+            ...Array.from(document.querySelectorAll('#checklist-advanced-a .checklist-item')),
+            ...Array.from(document.querySelectorAll('#checklist-advanced-b .checklist-item')),
+            ...Array.from(document.querySelectorAll('#checklist-advanced-c .checklist-item')),
+            ...Array.from(document.querySelectorAll('#checklist-advanced-d .checklist-item')),
+          ];
+        }
+      } else {
+        const checklistId = 'checklist-' + phaseId;
+        const checklist = document.getElementById(checklistId);
+        if (checklist) items = Array.from(checklist.querySelectorAll('.checklist-item'));
+      }
+
+      const total = items.length;
+      const done = items.filter(i => i.classList.contains('checked')).length;
+      pill.textContent = done + ' / ' + total;
+
+      if (total > 0 && done === total) {
+        card.classList.add('completed');
+        const navCheck = document.getElementById('nav-check-' + phaseId.replace('phase-',''));
+        if (navCheck) { navCheck.classList.add('done'); navCheck.textContent = '✓'; }
+      } else {
+        card.classList.remove('completed');
+        const navCheck = document.getElementById('nav-check-' + phaseId.replace('phase-',''));
+        if (navCheck) { navCheck.classList.remove('done'); navCheck.textContent = ''; }
+      }
+    });
+  }
+
+  function updateSidebarChecks() {
+    // handled in updatePhasePills
+  }
+
+  // ─── Troubleshooting Toggle ───
+  function toggleTrouble(item) {
+    item.classList.toggle('open');
+  }
+
+  // ─── Reset ───
+  function resetProgress() {
+    if (!confirm('Reset all progress? This will clear all your checked items.')) return;
+    const state = getState();
+    const name = state.userName;
+    localStorage.removeItem(STORAGE_KEY);
+    if (name) {
+      const newState = getState();
+      newState.userName = name;
+      saveState(newState);
+    }
+    document.querySelectorAll('.checklist-item').forEach(item => item.classList.remove('checked'));
+    document.querySelectorAll('.phase-card').forEach(card => card.classList.remove('completed'));
+    document.querySelectorAll('.nav-check').forEach(el => { el.classList.remove('done'); el.textContent = ''; });
+    updateProgress();
+  }
+
+  // ─── Initialise ───
+  window.addEventListener('DOMContentLoaded', () => {
+    const state = getState();
+
+
+
+    loadChecklist();
+    loadTokenPath();
+    updateProgress();
+
+    // Open first incomplete phase
+    const phases = ['phase-0','phase-1','phase-2','phase-3','phase-4','phase-5','phase-6','phase-7'];
+    let openedOne = false;
+    phases.forEach(id => {
+      const card = document.getElementById(id);
+      if (card) card.classList.remove('open');
+    });
+    phases.forEach(id => {
+      if (openedOne) return;
+      const card = document.getElementById(id);
+      if (!card) return;
+      if (!card.classList.contains('completed')) {
+        card.classList.add('open');
+        openedOne = true;
+      }
+    });
+    if (!openedOne) {
+      // All complete — open last
+      const last = document.getElementById('phase-7');
+      if (last) last.classList.add('open');
+    }
+  });
+</script>
+</body>
+</html>
